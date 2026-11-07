@@ -18,8 +18,14 @@ LoadOutcome ProgramLoader :: LoadFromStream (std:: istream& in) const{
     unsigned lineNo = 0 ;
     while (std :: getline(in,line)) {
         lineNo++ ;
+        size_t semi = line.find(';');
+        if (semi!= std :: string :: npos){
+            line = line.substr(0 , semi);
+        }
+
         size_t first = line.find_first_not_of(" \t\r\n");
         if(first == std:: string :: npos) continue;
+
         size_t last = line.find_last_not_of(" \t\r\n");
         line = line.substr(first , last-first +1);
         if(line[0] == ';') continue;
