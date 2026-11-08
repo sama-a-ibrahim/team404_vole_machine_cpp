@@ -4,6 +4,5 @@
 2006; load immediate value 06 into register 0
 2108; load immediate value 08 into register 1
 5201; add register 0 and 1 and put the result in register 2
-3200; store register 2 into memory [00] 
-32FF
+32FF;  store R2 to the screen
 c000; halt (execute the program) 

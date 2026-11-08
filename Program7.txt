@@ -1,0 +1,7 @@
+; Program 7: mask AB with 0F using AND, show 0B on the screen
+
+21AB ; R1 = AB
+220F ; R2 = 0F
+8312 ; R3 = R1 AND R2
+33FF ; screen = R3
+C000 ; halt

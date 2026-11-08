@@ -1,0 +1,7 @@
+; Program 5: Bitwise AND of 0F and A5, store the result in memory cell 10
+
+200f ; Load immediate value 0F into register R0
+21a5 ; Load immediate value A5 into register R1
+8201 ; Bitwise AND R0 and R1, put result in R2
+3210 ; Store register R2 into memory address 10
+c000 ; Halt Program execution

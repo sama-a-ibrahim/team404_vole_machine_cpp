@@ -1,0 +1,7 @@
+; Program 2: load two numbers (10 and 15) , add them and restore the result in memory cell 02
+
+200A ; Load immediate value 0A (10 in decimal) into register 0
+210F ; Load immediate value 0F (15 in decimal) into register 1
+5201 ; Add registers 0 and 1, and put the sum in register 2 (10 + 15 = 25 -> 19 in hex)
+3202 ; Store the contents of register 2 into memory cell [02]
+C000 ; Halt program execution

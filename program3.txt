@@ -1,0 +1,7 @@
+; Program 3: load 0A and 0F, OR them, store the result in memory cell 00
+
+200A ; Load immediate value A into register 0 
+210F ; Load immediate value F into register 1 
+7201 ; Perform bitwise OR between R0 and R1, store result in register 2 
+3200 ; Store the contents of register 2 into memory location 00 (Not the screen)
+C000 ; Halt - Stop the machine execution
