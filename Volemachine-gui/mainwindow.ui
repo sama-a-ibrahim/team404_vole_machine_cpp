@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect><x>0</x><y>0</y><width>1250</width><height>780</height></rect>
+  </property>
+  <property name="windowTitle">
+   <string>Vole Machine Language Simulator</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout" stretch="0,2,6,0">
+    <item>
+     <widget class="QLabel" name="titleLabel">
+      <property name="text"><string>Vole Machine Language Simulator</string></property>
+     </widget>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="topLayout">
+      <item>
+       <widget class="QGroupBox" name="inputGroup">
+        <property name="title"><string>Input Instructions</string></property>
+        <layout class="QVBoxLayout" name="inputLayout">
+         <item><widget class="QPlainTextEdit" name="inputEdit"/></item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="currentGroup">
+        <property name="title"><string>Current instruction</string></property>
+        <layout class="QVBoxLayout" name="currentLayout">
+         <item>
+          <widget class="QLabel" name="currentLabel">
+           <property name="text"><string>-</string></property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="pcGroup">
+        <property name="title"><string>Program Counter</string></property>
+        <layout class="QVBoxLayout" name="pcLayout">
+         <item><widget class="QSpinBox" name="pcSpin"/></item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="screenGroup">
+        <property name="title"><string>Output Screen</string></property>
+        <layout class="QVBoxLayout" name="screenLayout">
+         <item><widget class="QPlainTextEdit" name="screenView"/></item>
+        </layout>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="middleLayout" stretch="1,4">
+      <item>
+       <widget class="QGroupBox" name="regGroup">
+        <property name="title"><string>Register</string></property>
+        <layout class="QVBoxLayout" name="regLayout">
+         <item><widget class="QTableWidget" name="regTable"/></item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="memGroup">
+        <property name="title"><string>Memory</string></property>
+        <layout class="QVBoxLayout" name="memLayout">
+         <item><widget class="QTableWidget" name="memTable"/></item>
+        </layout>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="buttonsLayout">
+      <item><widget class="QPushButton" name="helpBtn"><property name="text"><string>Help</string></property></widget></item>
+      <item><widget class="QPushButton" name="loadInputBtn"><property name="text"><string>Load Input</string></property></widget></item>
+      <item><widget class="QPushButton" name="loadFileBtn"><property name="text"><string>Load File</string></property></widget></item>
+      <item><widget class="QPushButton" name="loadProgramBtn"><property name="text"><string>Load Program</string></property></widget></item>
+      <item><widget class="QPushButton" name="stepBtn"><property name="text"><string>Run Step</string></property></widget></item>
+      <item><widget class="QPushButton" name="runAllBtn"><property name="text"><string>Run All</string></property></widget></item>
+      <item><widget class="QPushButton" name="resetBtn"><property name="text"><string>Reset</string></property></widget></item>
+      <item><widget class="QPushButton" name="screenModeBtn"><property name="text"><string>Screen: DEC</string></property></widget></item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
