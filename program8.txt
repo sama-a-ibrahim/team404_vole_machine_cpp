@@ -1,9 +1,7 @@
-; ==========================================
-; Vole Machine Program Example 2
+; Vole Machine Program Example 8
 ; Purpose: Load two bit patterns (0F and F0), 
 ; perform a bitwise OR operation, 
 ; and store the result in memory.
-; ==========================================
 
 200F ; Load immediate value 0F into register 0
 21F0 ; Load immediate value F0 into register 1

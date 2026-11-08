@@ -1,0 +1,8 @@
+; Program 11: XOR 0A and 08, rotate the result right by 1, show it on the screen
+
+200A ; R0 = 0A
+2108 ; R1 = 08
+9A01 ; RA = R0 XOR R1
+AA01 ; rotate RA right by 1
+3AFF ; screen = RA
+C000 ; halt

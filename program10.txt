@@ -1,8 +1,6 @@
-; ------------------------------------------------------------
-; Vole Machine Program
+; Vole Machine Program 10
 ; Purpose: Add three numbers (2, 3, and 4)
 ; and display the result (9) on the screen.
-; ------------------------------------------------------------
 
 2002       ; Load immediate value 02 into register 0
 2103       ; Load immediate value 03 into register 1

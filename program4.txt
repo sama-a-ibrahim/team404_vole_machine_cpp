@@ -1,4 +1,4 @@
-; Purpuse: Rotate 1, and display result on screen.
+; Program 4: Rotate 1, and display result on screen.
 
 2001 ; load 1 in register 0.
 A001 ; rotate to the right with a shift amount of 1 bit
