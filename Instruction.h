@@ -6,7 +6,7 @@
 class Instruction {
     public:
     Instruction(uint16_t raw);
-    static std::optional<Instruction> fromHexString(const std::string& line);
+    static std::optional <Instruction> fromHexString(const std::string& line);
     bool isValid() const;
     uint8_t getOpcode() const;
     uint8_t getR() const;

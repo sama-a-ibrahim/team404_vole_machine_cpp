@@ -1,26 +1,34 @@
-cmake_minimum_required(VERSION 3.16)
-project(VoleMachine LANGUAGES CXX)
+cmake_minimum_required(VERSION 3.19)
+project(Volemachine-gui LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_AUTOMOC ON)
 
-file(GLOB CORE_SOURCES ${CMAKE_SOURCE_DIR}/*.cpp)
-list(FILTER CORE_SOURCES EXCLUDE REGEX ".*/(Menu|main|A2-[^/]*)\\.cpp$")
+find_package(Qt6 6.5 REQUIRED COMPONENTS Core Widgets)
 
+qt_standard_project_setup()
 
-add_executable(vole_console ${CORE_SOURCES} ${CMAKE_SOURCE_DIR}/Menu.cpp ${CMAKE_SOURCE_DIR}/main.cpp)
-target_include_directories(vole_console PRIVATE ${CMAKE_SOURCE_DIR})
-
-
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
-
-add_executable(vole_gui
-    ${CORE_SOURCES}
-    gui/main_gui.cpp
-    gui/MainWindow.cpp
-    gui/MainWindow.h
+qt_add_executable(Volemachine-gui
+    WIN32
+    main_gui.cpp
+    MainWindow.cpp
+    MainWindow.h
+    ALU.cpp ALU.h
+    Float8.cpp Float8.h
+    CPU.cpp CPU.h
+    Instruction.cpp Instruction.h
+    LoadOutcome.h
+    MachineController.cpp MachineController.h
+    MachineState.h
+    Memory.cpp Memory.h
+    ProgramLoader.cpp ProgramLoader.h
+    RegisterFile.cpp RegisterFile.h
+    Screen.cpp Screen.h
+    StepStatus.h
 )
-target_include_directories(vole_gui PRIVATE ${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/gui)
-target_link_libraries(vole_gui PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+
+target_link_libraries(Volemachine-gui
+    PRIVATE
+        Qt::Core
+        Qt::Widgets
+)
