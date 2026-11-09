@@ -57,7 +57,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     prev = controller.snapshot();
     refresh();
-    statusBar()->showMessage("Ready. Write or open a program, then press Load.");
+    statusBar()->showMessage("Ready. Click \"Open file...\" to pick a program, then press Load to memory.");
 }
 
 // UI
@@ -127,12 +127,7 @@ void MainWindow::buildUi()
 
     editor = new QPlainTextEdit;
     editor->setFont(mono);
-    editor->setPlainText(
-        "2105 ; R1 = 05\n"
-        "2203 ; R2 = 03\n"
-        "5312 ; R3 = R1 + R2\n"
-        "33FF ; write R3 to the screen\n"
-        "C000 ; halt\n");
+    editor->setPlaceholderText("Write your program here (one hex instruction per line),\n" "or click \"Open file...\" to load one of the ready-made programs.");
 
     btnOpen = new QPushButton("Open file...");
     btnLoad = new QPushButton("Load to memory");
@@ -251,10 +246,10 @@ void MainWindow::buildUi()
     sl->addWidget(makeTitle("Screen"));
 
     screenMode = new QComboBox;
-    screenMode->addItems({"Decimal", "Hexadecimal", "ASCII"});
+    screenMode->addItems({"Decimal", "Hexadecimal"});
     screenView = new QPlainTextEdit;
     screenView->setReadOnly(true);
-    QFont screenFont("Georgia", 36);
+    QFont screenFont("Palatino Linotype", 36);
     screenView->setObjectName("screenView");
     screenView->setFont(screenFont);
     screenView->setMinimumHeight(220);
@@ -301,7 +296,7 @@ void MainWindow::applyTheme()
     setStyleSheet(R"(
 QMainWindow {
     background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                stop:0 #5e433c, stop:0.55 #5d403a, stop:1 #cab3ab);
+                stop:0 #3e2119, stop:0.55 #5d403a, stop:1 #c7aba2);
 }
 QWidget { color: #c7c4c3; }
 QToolTip { background: #513b39; color: #b5b3b2; border: 1px solid #cec5e1; padding: 4px; }
@@ -333,10 +328,10 @@ QPushButton {
 QPushButton:hover    { background: rgba(255,255,255,14%); }
 QPushButton:pressed  { background: rgba(255,255,255,24%); }
 QPushButton:disabled { color: rgba(255,255,255,40%); border-color: rgba(255,255,255,20%); }
-QPushButton#btnRun   { background: #b598ef; border: 1px solid #c6b0f1; color: #2a1f33; }
-QPushButton#btnRun:hover  { background: #d1bef7; }
-QPushButton#btnStep  { background: #f4e6e6; border: 1px solid #ececec; color: #2a1f33; }
-QPushButton#btnStep:hover { background: #cabdbd; }
+QPushButton#btnRun   { background: #ccb7f6; border: 1px solid #c6b0f1; color: #2a1f33; }
+QPushButton#btnRun:hover  { background: #9980ca; }
+QPushButton#btnStep  { background: #c5c5d8; border: 1px solid #cbc9c9; color: #2a1f33; }
+QPushButton#btnStep:hover { background: #9d9cab; }
 QPushButton#btnStep:disabled { background: rgba(236,236,236,30%); border-color: transparent; color: rgba(42,31,51,50%); }
 
 QLineEdit, QPlainTextEdit, QComboBox {
@@ -348,7 +343,7 @@ QLineEdit, QPlainTextEdit, QComboBox {
     selection-color: #2a1f33;
 }
 QLineEdit:focus, QPlainTextEdit:focus, QComboBox:focus { border: 1px solid #b7a2e1; }
-QPlainTextEdit#screenView { background: transparent; border: none; color: #ffffff; }
+QPlainTextEdit#screenView { background: transparent; border: none; color: #d0ced7; }
 QComboBox::drop-down { border: none; width: 22px; }
 QComboBox QAbstractItemView {
     background: #4a3836; border: 1px solid rgba(255,255,255,25%);
@@ -370,7 +365,7 @@ QHeaderView::section {
 QTableCornerButton::section { background: transparent; border: none; }
 
 QLabel#nextLabel {
-    background: #c9b0f5; color: #2a1f33;
+    background: #c1a2df; color: #2a1f33;
     border-radius: 10px; padding: 8px 12px; font-weight: 600;
 }
 QLabel#legendPC      { background: #b89cf0; color: #312a36; border-radius: 6px; padding: 4px 10px; }
@@ -378,8 +373,8 @@ QLabel#legendChanged { background: #ececec; color: #3a353e; border-radius: 6px; 
 QLabel#legendScreen  { border: 1px solid rgba(255,255,255,70%); border-radius: 6px; padding: 4px 10px; }
 
 QSlider::groove:horizontal { height: 4px; background: rgba(255,255,255,30%); border-radius: 2px; }
-QSlider::sub-page:horizontal { background: #d5c6f4; border-radius: 2px; }
-QSlider::handle:horizontal { background: #d6c5f9; width: 16px; height: 16px; margin: -6px 0; border-radius: 8px; }
+QSlider::sub-page:horizontal { background: #ceb6fb; border-radius: 2px; }
+QSlider::handle:horizontal { background: #c7b1fc; width: 16px; height: 16px; margin: -6px 0; border-radius: 8px; }
 
 QScrollBar:vertical   { background: transparent; width: 10px; margin: 0; }
 QScrollBar:horizontal { background: transparent; height: 10px; margin: 0; }
@@ -410,7 +405,7 @@ void MainWindow::refresh()
     const QColor screenColor(255, 255, 255, 45);
     const QColor darkText("#2a1f33");
     const QColor brightText("#ffffff");
-    const QColor mutedText("#9a8884");
+    const QColor mutedText("#c2bebe");
 
     // memory
     const bool pcValid = (s.pc <= 0xFE);
@@ -624,6 +619,7 @@ void MainWindow::onReset()
 {
     stopRunning();
     controller.reset();
+    editor->clear();
     prev = controller.snapshot();
     refresh();
     statusBar()->showMessage("Machine reset (memory, registers, screen, PC = 00).", 5000);
