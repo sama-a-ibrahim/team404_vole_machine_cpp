@@ -1,10 +1,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
-
 #include <QMainWindow>
 #include <QTimer>
 #include "MachineController.h"
-
 class QTableWidget;
 class QPlainTextEdit;
 class QLabel;
@@ -34,6 +32,7 @@ private slots:
 
 private:
     void buildUi();
+    void applyTheme();
     void refresh();
     void capture();
     void stopRunning();
@@ -43,7 +42,7 @@ private:
 
     MachineController controller;
     QTimer timer;
-    MachineState prev;          // state before the last action (to highlight changes)
+    MachineState prev; 
     bool refreshing = false;
     double acc = 0.0;
 

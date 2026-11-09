@@ -3,6 +3,7 @@
 #include <QFile>
 #include <QFileDialog>
 #include <QFontDatabase>
+#include <QFrame>
 #include <QGroupBox>
 #include <QHBoxLayout>
 #include <QHeaderView>
@@ -18,7 +19,6 @@
 #include <QTextStream>
 #include <QVBoxLayout>
 
-// ---------- small helpers ----------
 static QString hex2(unsigned v)
 {
     return QString::number(v, 16).toUpper().rightJustified(2, '0');
@@ -44,7 +44,6 @@ static bool parseHex(const QString &text, unsigned maxValue, unsigned &out)
     return true;
 }
 
-// ---------- constructor ----------
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
@@ -52,6 +51,7 @@ MainWindow::MainWindow(QWidget *parent)
     resize(1280, 780);
 
     buildUi();
+    applyTheme();
 
     connect(&timer, &QTimer::timeout, this, &MainWindow::onTick);
 
@@ -60,24 +60,37 @@ MainWindow::MainWindow(QWidget *parent)
     statusBar()->showMessage("Ready. Write or open a program, then press Load.");
 }
 
-// ---------- UI ----------
+// UI
 void MainWindow::buildUi()
 {
     const QFont mono = QFontDatabase::systemFont(QFontDatabase::FixedFont);
+    auto makeTitle = [](const QString &text) {
+        auto *l = new QLabel(text);
+        l->setObjectName("panelTitle");
+        return l;
+    };
 
     auto *central = new QWidget;
     setCentralWidget(central);
     auto *root = new QVBoxLayout(central);
+    root->setContentsMargins(24, 20, 24, 12);
+    root->setSpacing(14);
 
-    // ===== top control bar =====
+    // top control bar
     auto *bar = new QHBoxLayout;
+    bar->setSpacing(12);
+
+    auto *title = new QLabel("Vole Machine");
+    title->setObjectName("appTitle");
 
     btnRun = new QPushButton("Run");
     btnStep = new QPushButton("Step");
     btnReset = new QPushButton("Reset");
-    btnRun->setStyleSheet("background:#2e9e5b;color:white;font-weight:bold;padding:7px 18px;");
-    btnStep->setStyleSheet("background:#2f6fd6;color:white;font-weight:bold;padding:7px 18px;");
-    btnReset->setStyleSheet("background:#c0392b;color:white;font-weight:bold;padding:7px 18px;");
+    btnRun->setObjectName("btnRun");
+    btnStep->setObjectName("btnStep");
+    btnReset->setObjectName("btnReset");
+    for (QPushButton *b : {btnRun, btnStep, btnReset})
+        b->setCursor(Qt::PointingHandCursor);
 
     speedSlider = new QSlider(Qt::Horizontal);
     speedSlider->setRange(1, 10);
@@ -86,8 +99,10 @@ void MainWindow::buildUi()
     speedLabel = new QLabel;
 
     stateLabel = new QLabel;
-    stateLabel->setStyleSheet("font-weight:bold;padding:4px 10px;border-radius:4px;");
+    stateLabel->setObjectName("stateBadge");
 
+    bar->addWidget(title);
+    bar->addSpacing(16);
     bar->addWidget(btnRun);
     bar->addWidget(btnStep);
     bar->addWidget(btnReset);
@@ -99,9 +114,16 @@ void MainWindow::buildUi()
     bar->addWidget(stateLabel);
     root->addLayout(bar);
 
-    // ===== left: program editor =====
-    auto *progBox = new QGroupBox("1. Program (hex, one instruction per line)");
+    auto *headerLine = new QFrame;
+    headerLine->setObjectName("headerLine");
+    headerLine->setFixedHeight(1);
+    root->addWidget(headerLine);
+
+    // left: program editor
+    auto *progBox = new QGroupBox;
+    progBox->setToolTip("Hex, one instruction per line");
     auto *pl = new QVBoxLayout(progBox);
+    pl->addWidget(makeTitle("Program"));
 
     editor = new QPlainTextEdit;
     editor->setFont(mono);
@@ -118,19 +140,24 @@ void MainWindow::buildUi()
     startEdit->setMaximumWidth(50);
     startEdit->setMaxLength(4);
 
+    auto *startRow = new QHBoxLayout;
+    startRow->addWidget(new QLabel("Start (hex):"));
+    startRow->addWidget(startEdit);
+    startRow->addStretch();
+
     auto *loadRow = new QHBoxLayout;
     loadRow->addWidget(btnOpen);
-    loadRow->addStretch();
-    loadRow->addWidget(new QLabel("Start address (hex):"));
-    loadRow->addWidget(startEdit);
     loadRow->addWidget(btnLoad);
 
     pl->addWidget(editor);
+    pl->addLayout(startRow);
     pl->addLayout(loadRow);
 
-    // ===== center: memory =====
-    auto *memBox = new QGroupBox("2. Main Memory (double-click a cell to edit)");
+    // center: memory
+    auto *memBox = new QGroupBox;
+    memBox->setToolTip("Double-click a cell to edit");
     auto *ml = new QVBoxLayout(memBox);
+    ml->addWidget(makeTitle("Memory"));
 
     memTable = new QTableWidget(16, 16);
     QStringList hdr;
@@ -141,6 +168,7 @@ void MainWindow::buildUi()
     memTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     memTable->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     memTable->setFont(mono);
+    memTable->setShowGrid(false);
     for (int r = 0; r < 16; ++r) {
         for (int c = 0; c < 16; ++c) {
             auto *it = new QTableWidgetItem("00");
@@ -149,21 +177,29 @@ void MainWindow::buildUi()
         }
     }
 
-    auto *legend = new QLabel(
-        "<span style='background:#78b4ff;color:black'>&nbsp;PC / next instruction&nbsp;</span> "
-        "<span style='background:#ffc86e;color:black'>&nbsp;just changed&nbsp;</span> "
-        "<span style='background:#e1e1e1;color:black'>&nbsp;FF = screen&nbsp;</span>");
+    auto *lgPC = new QLabel("PC");
+    auto *lgChanged = new QLabel("just changed");
+    auto *lgScreen = new QLabel("FF screen");
+    lgPC->setObjectName("legendPC");
+    lgChanged->setObjectName("legendChanged");
+    lgScreen->setObjectName("legendScreen");
+    auto *legend = new QHBoxLayout;
+    legend->setSpacing(8);
+    legend->addWidget(lgPC);
+    legend->addWidget(lgChanged);
+    legend->addWidget(lgScreen);
+    legend->addStretch();
 
     ml->addWidget(memTable);
-    ml->addWidget(legend);
+    ml->addLayout(legend);
 
-    // ===== right: CPU + screen =====
+    // right: CPU + screen
     auto *rightWidget = new QWidget;
     auto *rl = new QVBoxLayout(rightWidget);
     rl->setContentsMargins(0, 0, 0, 0);
-
-    auto *cpuBox = new QGroupBox("3. CPU");
+    auto *cpuBox = new QGroupBox;
     auto *cl = new QVBoxLayout(cpuBox);
+    cl->addWidget(makeTitle("CPU"));
 
     pcLabel = new QLabel;
     irLabel = new QLabel;
@@ -177,7 +213,7 @@ void MainWindow::buildUi()
     nextLabel = new QLabel;
     nextLabel->setWordWrap(true);
     nextLabel->setFont(mono);
-    nextLabel->setStyleSheet("background:#eef4ff;color:black;border:1px solid #9bb8e8;padding:6px;");
+    nextLabel->setObjectName("nextLabel");
 
     pcEdit = new QLineEdit;
     pcEdit->setPlaceholderText("new PC (00-FE, even)");
@@ -196,6 +232,7 @@ void MainWindow::buildUi()
     regTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     regTable->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     regTable->setFont(mono);
+    regTable->setShowGrid(false);
     for (int r = 0; r < 16; ++r) {
         auto *it = new QTableWidgetItem("00");
         it->setTextAlignment(Qt::AlignCenter);
@@ -207,14 +244,20 @@ void MainWindow::buildUi()
     cl->addLayout(pcSetRow);
     cl->addWidget(regTable);
 
-    auto *screenBox = new QGroupBox("4. Screen (memory cell FF)");
+    //screen
+    auto *screenBox = new QGroupBox;
+    screenBox->setToolTip("Memory cell FF");
     auto *sl = new QVBoxLayout(screenBox);
+    sl->addWidget(makeTitle("Screen"));
+
     screenMode = new QComboBox;
     screenMode->addItems({"Decimal", "Hexadecimal", "ASCII"});
     screenView = new QPlainTextEdit;
     screenView->setReadOnly(true);
-    screenView->setFont(mono);
-    screenView->setMaximumHeight(110);
+    QFont screenFont("Georgia", 36);
+    screenView->setObjectName("screenView");
+    screenView->setFont(screenFont);
+    screenView->setMinimumHeight(220);
     auto *smRow = new QHBoxLayout;
     smRow->addWidget(new QLabel("Show as:"));
     smRow->addWidget(screenMode);
@@ -222,18 +265,21 @@ void MainWindow::buildUi()
     sl->addLayout(smRow);
     sl->addWidget(screenView);
 
-    rl->addWidget(cpuBox, 1);
-    rl->addWidget(screenBox);
+    rl->addWidget(cpuBox, 3);
+    rl->addWidget(screenBox, 2);
 
-    // ===== assemble =====
+    // assemble
     auto *splitter = new QSplitter(Qt::Horizontal);
     splitter->addWidget(progBox);
     splitter->addWidget(memBox);
     splitter->addWidget(rightWidget);
-    splitter->setSizes({280, 620, 360});
+    splitter->setSizes({260, 760, 380});
+    splitter->setStretchFactor(0, 1);
+    splitter->setStretchFactor(1, 4);
+    splitter->setStretchFactor(2, 2);
     root->addWidget(splitter, 1);
 
-    // ===== connections =====
+    // connections
     connect(btnOpen, &QPushButton::clicked, this, &MainWindow::onOpenFile);
     connect(btnLoad, &QPushButton::clicked, this, &MainWindow::onLoad);
     connect(btnRun, &QPushButton::clicked, this, &MainWindow::onRunPause);
@@ -249,7 +295,106 @@ void MainWindow::buildUi()
     onSpeedChanged(speedSlider->value());
 }
 
-// ---------- state -> widgets ----------
+// theme
+void MainWindow::applyTheme()
+{
+    setStyleSheet(R"(
+QMainWindow {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                stop:0 #5e433c, stop:0.55 #5d403a, stop:1 #cab3ab);
+}
+QWidget { color: #c7c4c3; }
+QToolTip { background: #513b39; color: #b5b3b2; border: 1px solid #cec5e1; padding: 4px; }
+
+QLabel#appTitle { font-family: Palatino Linotype, 'Times New Roman', serif; font-size: 30pt; color: #c4c3c6; }
+QFrame#headerLine { background: rgba(255,255,255,25%); border: none; }
+
+QGroupBox {
+    background: rgba(255,255,255,8%);
+    border: 1px solid rgba(255,255,255,28%);
+    border-radius: 16px;
+    padding: 14px 14px 12px 14px;
+}
+QLabel#panelTitle {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 20pt;
+    color: #ab9aca;
+    padding-bottom: 4px;
+}
+
+QPushButton {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,70%);
+    border-radius: 10px;
+    padding: 8px 20px;
+    color: #f6efec;
+    font-weight: 600;
+}
+QPushButton:hover    { background: rgba(255,255,255,14%); }
+QPushButton:pressed  { background: rgba(255,255,255,24%); }
+QPushButton:disabled { color: rgba(255,255,255,40%); border-color: rgba(255,255,255,20%); }
+QPushButton#btnRun   { background: #b598ef; border: 1px solid #c6b0f1; color: #2a1f33; }
+QPushButton#btnRun:hover  { background: #d1bef7; }
+QPushButton#btnStep  { background: #f4e6e6; border: 1px solid #ececec; color: #2a1f33; }
+QPushButton#btnStep:hover { background: #cabdbd; }
+QPushButton#btnStep:disabled { background: rgba(236,236,236,30%); border-color: transparent; color: rgba(42,31,51,50%); }
+
+QLineEdit, QPlainTextEdit, QComboBox {
+    background: rgba(0,0,0,18%);
+    border: 1px solid rgba(255,255,255,25%);
+    border-radius: 8px;
+    padding: 6px 8px;
+    selection-background-color: #cebaf6;
+    selection-color: #2a1f33;
+}
+QLineEdit:focus, QPlainTextEdit:focus, QComboBox:focus { border: 1px solid #b7a2e1; }
+QPlainTextEdit#screenView { background: transparent; border: none; color: #ffffff; }
+QComboBox::drop-down { border: none; width: 22px; }
+QComboBox QAbstractItemView {
+    background: #4a3836; border: 1px solid rgba(255,255,255,25%);
+    selection-background-color: #b89cf0; selection-color: #2a1f33;
+}
+
+QTableWidget {
+    background: transparent;
+    border: none;
+    gridline-color: transparent;
+    selection-background-color: rgba(184,156,240,35%);
+    selection-color: #ffffff;
+}
+QHeaderView { background: transparent; }
+QHeaderView::section {
+    background: transparent; color: #d8cbc7;
+    border: none; padding: 4px; font-weight: 600;
+}
+QTableCornerButton::section { background: transparent; border: none; }
+
+QLabel#nextLabel {
+    background: #c9b0f5; color: #2a1f33;
+    border-radius: 10px; padding: 8px 12px; font-weight: 600;
+}
+QLabel#legendPC      { background: #b89cf0; color: #312a36; border-radius: 6px; padding: 4px 10px; }
+QLabel#legendChanged { background: #ececec; color: #3a353e; border-radius: 6px; padding: 4px 10px; }
+QLabel#legendScreen  { border: 1px solid rgba(255,255,255,70%); border-radius: 6px; padding: 4px 10px; }
+
+QSlider::groove:horizontal { height: 4px; background: rgba(255,255,255,30%); border-radius: 2px; }
+QSlider::sub-page:horizontal { background: #d5c6f4; border-radius: 2px; }
+QSlider::handle:horizontal { background: #d6c5f9; width: 16px; height: 16px; margin: -6px 0; border-radius: 8px; }
+
+QScrollBar:vertical   { background: transparent; width: 10px; margin: 0; }
+QScrollBar:horizontal { background: transparent; height: 10px; margin: 0; }
+QScrollBar::handle:vertical   { background: rgba(255,255,255,25%); border-radius: 5px; min-height: 24px; }
+QScrollBar::handle:horizontal { background: rgba(255,255,255,25%); border-radius: 5px; min-width: 24px; }
+QScrollBar::add-line, QScrollBar::sub-line { width: 0; height: 0; }
+QScrollBar::add-page, QScrollBar::sub-page { background: transparent; }
+
+QSplitter::handle { background: transparent; }
+QStatusBar { background: transparent; color: #d8cbc7; }
+QStatusBar::item { border: none; }
+)");
+}
+
+// state -> widgets 
 void MainWindow::capture()
 {
     prev = controller.snapshot();
@@ -260,9 +405,12 @@ void MainWindow::refresh()
     const MachineState s = controller.snapshot();
     refreshing = true;
 
-    const QColor pcColor(120, 180, 255);
-    const QColor changedColor(255, 200, 110);
-    const QColor screenColor(225, 225, 225);
+    const QColor pcColor("#b89cf0");
+    const QColor changedColor("#ececec");
+    const QColor screenColor(255, 255, 255, 45);
+    const QColor darkText("#2a1f33");
+    const QColor brightText("#ffffff");
+    const QColor mutedText("#9a8884");
 
     // memory
     const bool pcValid = (s.pc <= 0xFE);
@@ -270,20 +418,21 @@ void MainWindow::refresh()
         QTableWidgetItem *it = memTable->item(a / 16, a % 16);
         it->setText(hex2(s.memory[a]));
 
-        QColor bg;
-        if (pcValid && (a == s.pc || a == s.pc + 1))
-            bg = pcColor;
-        else if (s.memory[a] != prev.memory[a])
-            bg = changedColor;
-        else if (a == 0xFF)
-            bg = screenColor;
+        QColor bg, fg;
+        if (pcValid && (a == s.pc || a == s.pc + 1)) {
+            bg = pcColor;      fg = darkText;
+        } else if (s.memory[a] != prev.memory[a]) {
+            bg = changedColor; fg = darkText;
+        } else if (a == 0xFF) {
+            bg = screenColor;  fg = brightText;
+        }
 
         if (bg.isValid()) {
             it->setBackground(bg);
-            it->setForeground(Qt::black);
+            it->setForeground(fg);
         } else {
             it->setBackground(QBrush());
-            it->setForeground(QBrush());
+            it->setForeground(s.memory[a] ? brightText : mutedText);
         }
     }
 
@@ -293,10 +442,10 @@ void MainWindow::refresh()
         it->setText(hex2(s.registers[i]));
         if (s.registers[i] != prev.registers[i]) {
             it->setBackground(changedColor);
-            it->setForeground(Qt::black);
+            it->setForeground(darkText);
         } else {
             it->setBackground(QBrush());
-            it->setForeground(QBrush());
+            it->setForeground(brightText);
         }
     }
 
@@ -320,15 +469,16 @@ void MainWindow::refresh()
     }
 
     // state badge
+    const QString badgeBase = "font-weight:600;padding:6px 16px;border-radius:10px;";
     if (s.halted) {
         stateLabel->setText("HALTED");
-        stateLabel->setStyleSheet("font-weight:bold;padding:4px 10px;border-radius:4px;background:#c0392b;color:white;");
+        stateLabel->setStyleSheet(badgeBase + "color:white;background:transparent;border:1px solid rgba(255,255,255,80%);");
     } else if (timer.isActive()) {
         stateLabel->setText("RUNNING");
-        stateLabel->setStyleSheet("font-weight:bold;padding:4px 10px;border-radius:4px;background:#2e9e5b;color:white;");
+        stateLabel->setStyleSheet(badgeBase + "color:#2a1f33;background:#b89cf0;border:1px solid #b89cf0;");
     } else {
         stateLabel->setText("READY");
-        stateLabel->setStyleSheet("font-weight:bold;padding:4px 10px;border-radius:4px;background:#7f8c8d;color:white;");
+        stateLabel->setStyleSheet(badgeBase + "color:#d8cbc7;background:transparent;border:1px solid rgba(255,255,255,35%);");
     }
 
     // screen
@@ -375,11 +525,10 @@ QString MainWindow::describe(const Instruction &i) const
     }
 }
 
-// ---------- actions ----------
+// actions 
 void MainWindow::onOpenFile()
 {
-    const QString path = QFileDialog::getOpenFileName(this, "Open program file", QString(),
-                                                      "Text files (*.txt);;All files (*)");
+    const QString path = QFileDialog::getOpenFileName(this, "Open program file", QString(), "Text files (*.txt);;All files (*)");
     if (path.isEmpty())
         return;
 
@@ -402,7 +551,6 @@ void MainWindow::onLoad()
         return;
     }
 
-    // The controller loads from a file path, so we write the editor text to a temp file.
     QTemporaryFile tmp;
     if (!tmp.open()) {
         statusBar()->showMessage("Cannot create a temporary file.", 6000);
@@ -533,7 +681,7 @@ void MainWindow::onSpeedChanged(int level)
 
 int MainWindow::stepsPerSecond() const
 {
-    return 1 << (speedSlider->value() - 1);   // 1, 2, 4, ... 512
+    return 1 << (speedSlider->value() - 1); 
 }
 
 void MainWindow::stopRunning()
