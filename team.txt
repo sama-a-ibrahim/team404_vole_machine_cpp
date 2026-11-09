@@ -1,0 +1,21 @@
+Section: s40  [ALL team members]
+
+ZIP_FILE: CS1213_A2_Part3_S40_20250278_20250292_20250294_20250704
+
+ID1: 20250278
+Name1: Saja Ahmed Mohamed
+Files1: MachineController.h, MachineController.cpp, MachineState.h, menu.h, menu.cpp.
+
+ID2: 20250292
+Name2: Selwan Ayman Mustafa
+Files2: CPU.h, CPU.cpp, RegisterFile.h, RegisterFile.cpp, StepStatus.h, Programs 8->10.
+
+ID3: 20250294
+Name3: Sama Ahmed Ibrahim
+Files3: Memory.h, Memory.cpp, Screen.h, Screen.cpp, Programs 2->7, ProgramResults.md, Programs 11->20.
+
+ID4: 20250704
+Name4: Nada Mohamed Refaat
+Files4: Instuction.h, Instruction.cpp, ProgramLoader.h, ProgramLoader.cpp, main.cpp, LoadOutcome.h, Program1.
+
+GUI Files (MainWindow.h, MainWindow.cpp, main_gui.cpp): Common for all team members.

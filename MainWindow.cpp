@@ -340,7 +340,7 @@ QLineEdit, QPlainTextEdit, QComboBox {
     border-radius: 8px;
     padding: 6px 8px;
     selection-background-color: #cebaf6;
-    selection-color: #2a1f33;
+    selection-color: #d0c1de;
 }
 QLineEdit:focus, QPlainTextEdit:focus, QComboBox:focus { border: 1px solid #b7a2e1; }
 QPlainTextEdit#screenView { background: transparent; border: none; color: #d0ced7; }
