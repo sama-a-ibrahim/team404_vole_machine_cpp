@@ -1,0 +1,16 @@
+; Program 22: multiply 12 x 2 using a loop (repeated addition), then subtract 4
+; Result: 12 x 2 - 4 = 20 (0x14), displayed on the screen
+
+2002 ; R0 = 02 (number of repetitions)
+210C ; R1 = 0C (12, the number to add each time)
+2200 ; R2 = 00 (running total)
+2300 ; R3 = 00 (loop counter)
+2401 ; R4 = 01 (increment)
+25FC ; R5 = FC (-4 in two's complement)
+B314 ; if R3 == R0 jump to address 14 (exit the loop)
+5221 ; R2 = R2 + R1 (add 12 to the total)
+5334 ; R3 = R3 + R4 (counter + 1)
+B00C ; jump back to address 0C (R0 == R0 always true)
+5225 ; R2 = R2 + R5 (subtract 4)
+32FF ; show R2 on the screen
+C000 ; halt

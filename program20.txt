@@ -1,0 +1,6 @@
+; Program 20:
+; Infinite loop: jumps to itself forever
+
+2000
+B000
+C000

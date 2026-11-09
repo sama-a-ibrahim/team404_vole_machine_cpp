@@ -1,10 +1,5 @@
-// Date: 6 Oct 1973
-// The machine is having a perfectly normal day.
-// Please do not feed the registers after midnight.
-
 #ifndef MACHINE_STATE_H
 #define MACHINE_STATE_H
-
 #include <cstdint>
 #include <array>
 #include <vector>
@@ -18,4 +13,4 @@ struct MachineState {
     std::vector<uint8_t> screen;
 };
 
-#endif // MACHINE_STATE_H
+#endif

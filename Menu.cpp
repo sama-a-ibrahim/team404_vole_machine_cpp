@@ -1,17 +1,9 @@
-// Date: 6 Oct 1973
-// The machine is having a perfectly normal day.
-// Please do not feed the registers after midnight.
-
 #include "Menu.h"
-
 #include <iostream>
 #include <string>
 #include <iomanip>
 #include <cctype>
 
-//*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/
-
-// Helper function to convert hexadecimal string to number
 static bool parseHex(const std::string& input, unsigned int& value) {
 
     if (input.empty()) {
@@ -51,14 +43,9 @@ static bool parseHex(const std::string& input, unsigned int& value) {
     }
 }
 
-//*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/
-
 Menu::Menu(MachineController& controller)
     : controller(controller), screenMode(ScreenMode::DECIMAL) {
 }
-
-//*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/
-
 void Menu::showMainMenu() const {
 
     std::cout << "\n=== Vole Machine Simulator ===\n";
@@ -76,9 +63,6 @@ void Menu::showMainMenu() const {
 
     std::cout << "Enter your choice: ";
 }
-
-//*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/
-
 void Menu::handleLoad() {
 
     std::string filename;
@@ -119,9 +103,6 @@ void Menu::handleLoad() {
 
     handleDisplay();
 }
-
-//*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/
-
 void Menu::handleEditRegister() {
 
     std::string indexInput;
@@ -158,9 +139,6 @@ void Menu::handleEditRegister() {
 
     handleDisplay();
 }
-
-//*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/
-
 void Menu::handleEditMemory() {
 
     std::string addressInput;
@@ -194,9 +172,6 @@ void Menu::handleEditMemory() {
 
     handleDisplay();
 }
-
-//*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/
-
 void Menu::handleSetPC() {
 
     std::string addressInput;
@@ -219,9 +194,6 @@ void Menu::handleSetPC() {
 
     handleDisplay();
 }
-
-//*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/
-
 void Menu::handleRun() {
 
     StepStatus status = controller.run();
@@ -244,9 +216,6 @@ void Menu::handleRun() {
     std::cout << "Returning to main menu. "
               << "You can load another program or exit.\n";
 }
-
-//*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/
-
 void Menu::handleStep() {
 
     while (true) {
@@ -287,9 +256,6 @@ void Menu::handleStep() {
 
     std::cout << "Returning to main menu.\n";
 }
-
-//*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/
-
 void Menu::handleDisplay() {
 
     MachineState state = controller.snapshot();
@@ -317,9 +283,6 @@ void Menu::handleDisplay() {
 
     std::cout << "===================================\n";
 }
-
-//*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/
-
 void Menu::printRegisters(const MachineState& s) const {
 
     std::cout << "\n--- Registers ---\n";
@@ -340,9 +303,6 @@ void Menu::printRegisters(const MachineState& s) const {
 
     std::cout << std::dec;
 }
-
-//*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/
-
 void Menu::printMemory(const MachineState& s) const {
 
     std::cout << "\n--- Memory ---\n";
@@ -375,9 +335,6 @@ void Menu::printMemory(const MachineState& s) const {
 
     std::cout << std::dec;
 }
-
-//*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/
-
 void Menu::printScreen(const MachineState& s) const {
 
     std::cout << "\n--- Screen Output ---\n";
@@ -405,9 +362,6 @@ void Menu::printScreen(const MachineState& s) const {
 
     std::cout << std::dec << "\n";
 }
-
-//*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/
-
 void Menu::handleScreenMode() {
 
     std::string choice;
@@ -433,9 +387,6 @@ void Menu::handleScreenMode() {
         std::cout << "Invalid choice.\n";
     }
 }
-
-//*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/
-
 void Menu::run() {
 
     std::string choice;

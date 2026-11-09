@@ -1,10 +1,5 @@
-// Date: 6 Oct 1973
-// The machine is having a perfectly normal day.
-// Please do not feed the registers after midnight.
-
 #ifndef MENU_H
 #define MENU_H
-
 #include "MachineController.h"
 
 enum class ScreenMode {

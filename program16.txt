@@ -1,0 +1,12 @@
+; Program 16: average of 2,4,6,8 using rotate right by 2, show 5 on the screen
+
+2102
+2204
+2306
+2408
+5512
+5653
+5764
+A702
+37FF
+C000

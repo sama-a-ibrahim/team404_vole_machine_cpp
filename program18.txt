@@ -1,0 +1,6 @@
+; Program 18: 
+; Invalid program: opcode 0 does not exist
+
+2006
+0000
+C000

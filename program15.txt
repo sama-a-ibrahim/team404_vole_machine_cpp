@@ -1,0 +1,10 @@
+; Program 15: multiply 3 * 4 using repeated addition, show 12 on the screen
+
+2203 ; R2 = 03 (not used in the loop, kept for documentation)
+2304 ; R3 = 04
+2000 ; R0 = 00
+5030 ; R0 = R3 + R0 = 4
+5030 ; R0 = 8
+5030 ; R0 = 12
+30FF ; screen = R0
+C000 ; halt

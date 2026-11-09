@@ -1,13 +1,7 @@
-// Date: 6 Oct 1973
-// The machine is having a perfectly normal day.
-// Please do not feed the registers after midnight.
-
 #ifndef MACHINE_CONTROLLER_H
 #define MACHINE_CONTROLLER_H
-
 #include <string>
 #include <cstdint>
-
 #include "Screen.h"
 #include "Memory.h"
 #include "CPU.h"
