@@ -47,7 +47,7 @@ static bool parseHex(const QString &text, unsigned maxValue, unsigned &out)
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
-    setWindowTitle("Vole Machine Simulator");
+    setWindowTitle("Team 404_Vole Machine");
     resize(1280, 780);
 
     buildUi();
@@ -249,7 +249,7 @@ void MainWindow::buildUi()
     screenMode->addItems({"Decimal", "Hexadecimal"});
     screenView = new QPlainTextEdit;
     screenView->setReadOnly(true);
-    QFont screenFont("Palatino Linotype", 36);
+    QFont screenFont("Palatino Linotype",40);
     screenView->setObjectName("screenView");
     screenView->setFont(screenFont);
     screenView->setMinimumHeight(220);
